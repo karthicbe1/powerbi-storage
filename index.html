@@ -164,21 +164,20 @@
       reader.readAsText(file);
     }
 
-    function displayTable(newDataRows) {
+   function displayTable(newDataRows) {
   if (!Array.isArray(newDataRows) || newDataRows.length === 0) {
     alert("Uploaded file appears to be empty or invalid.");
     return;
   }
 
   const alwaysVisibleCols = [
-  "Company_size",
-  "storage_budget_needed",
-  "iops_requirement",
-  "compliance_needs",
-  "expected_growth_rate", // <- updated casing
-  "workload_type",
-  "Predicted_Recommended_Storage"
-];
+    "industry",
+    "storage_budget_needed",
+    "iops_requirement",
+    "compliance_needs",
+    "expected_growth_rate",
+    "predicted_recommended_storage"
+  ];
 
   const headers = [...newDataRows[0], "Predicted_Recommended_Storage"];
   const data = newDataRows.slice(1).map((row, i) => {
@@ -187,6 +186,9 @@
     return [...paddedRow, predictionColumn[i] || ""];
   });
 
+ console.log("CSV Headers:", headers);
+  console.log("Always visible columns:", alwaysVisibleCols);
+  
   if ($.fn.DataTable.isDataTable("#resultTable")) {
     $("#resultTable").DataTable().clear().destroy();
   }
@@ -220,7 +222,8 @@
     scrollX: true,
     columnDefs: headers.map((header, index) => ({
       targets: index,
-      responsivePriority: alwaysVisibleCols.includes(header) ? 1 : 100
+      responsivePriority: alwaysVisibleCols
+        .includes(header.toLowerCase().trim()) ? 1 : 100
     }))
   });
 }
